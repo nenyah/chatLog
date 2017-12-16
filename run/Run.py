@@ -1,6 +1,6 @@
-import base
-import visualization
+import base.DataClean
+import visualization.Wordcloud
 
 if __name__ == '__main__':
-    base.work()
-    visualization.work()
+    Dataclean.work()
+    Wordcloud.work()

@@ -9,6 +9,7 @@ from pymongo import MongoClient
 
 
 class dataclean():
+
     def __init__(self):
 
         # 初始化两个常用正则
@@ -30,7 +31,6 @@ class dataclean():
             return self.time_pattern.search(str).group(), self.ID_pattern.search(str).group()
 
     def work(self):
-
         '''
         腾讯导出的聊天记录是UTF-8+bom的 手动改成 -bom
         进行数据清洗,将原始数据划分成块保存进mongodb中
@@ -46,12 +46,11 @@ class dataclean():
         db = client.chatlog
         post = db.vczh
 
-        fp = open('../run/chatlog.txt', 'r', encoding='utf-8')
-        chatlog_list = []
-        for line in fp.readlines():
-            if line.strip() != "":
-                chatlog_list.append(line.strip())
-        fp.close()
+        with open('../run/chatlog.txt', 'r', encoding='utf-8') as fp:
+            chatlog_list = []
+            for line in fp.readlines():
+                if line.strip() != "":
+                    chatlog_list.append(line.strip())
 
         print(len(chatlog_list))
         pos = 0  # 当前分析位置
@@ -75,7 +74,8 @@ class dataclean():
 
                     for i in '()<>':
                         ID = ID.replace(i, "")
-                    name = chatlog_list[last].replace(tup[1], "").replace(tup[0], "").lstrip()
+                    name = chatlog_list[last].replace(
+                        tup[1], "").replace(tup[0], "").lstrip()
 
                     # 为什么会有人取名叫   【狗】【熊】吉！！！！！
                     # 由于等级标签有极大部分缺失，所以直接去除
@@ -99,3 +99,7 @@ class dataclean():
             pos += 1
         client.close()
         print('----------数据清洗完成-------------')
+
+if __name__ == '__main__':
+    dc = dataclean()
+    dc.work()
